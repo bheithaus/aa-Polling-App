@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130402182851) do
+ActiveRecord::Schema.define(:version => 20130402233412) do
 
   create_table "answers", :force => true do |t|
     t.integer  "respondent_id"
@@ -22,6 +22,15 @@ ActiveRecord::Schema.define(:version => 20130402182851) do
 
   add_index "answers", ["respondent_id", "choice_id"], :name => "index_answers_on_respondent_id_and_choice_id"
 
+  create_table "assignments", :force => true do |t|
+    t.integer  "focus_group_id"
+    t.integer  "user_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "assignments", ["user_id", "focus_group_id"], :name => "index_assignments_on_user_id_and_focus_group_id"
+
   create_table "choices", :force => true do |t|
     t.integer  "question_id"
     t.text     "body"
@@ -31,6 +40,12 @@ ActiveRecord::Schema.define(:version => 20130402182851) do
 
   add_index "choices", ["question_id"], :name => "index_choices_on_question_id"
 
+  create_table "focus_groups", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "polls", :force => true do |t|
     t.integer  "user_id"
     t.string   "title"
@@ -39,6 +54,15 @@ ActiveRecord::Schema.define(:version => 20130402182851) do
   end
 
   add_index "polls", ["user_id"], :name => "index_polls_on_user_id"
+
+  create_table "polls_focus_groups", :force => true do |t|
+    t.integer  "focus_group_id"
+    t.integer  "poll_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "polls_focus_groups", ["poll_id", "focus_group_id"], :name => "index_polls_focus_groups_on_poll_id_and_focus_group_id"
 
   create_table "questions", :force => true do |t|
     t.integer  "poll_id"
