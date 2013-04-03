@@ -23,6 +23,8 @@ class Poll < ActiveRecord::Base
   # INNER JOIN questions
   #         ON choices.question_id = questions.id
   #      WHERE questions.poll_id = #{self.id}
+  has_many :polls_focus_groups
+  has_many :focus_groups, :through => :polls_focus_groups
 
   belongs_to :user
 
