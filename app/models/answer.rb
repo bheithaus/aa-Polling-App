@@ -4,7 +4,8 @@ class Answer < ActiveRecord::Base
   has_one :question, :through => :choice
 
   validate :validate_unique_answer,
-           :validate_respondent_is_not_creator
+           :validate_respondent_is_not_creator,
+           :validate_allowed_focus_group
 
   attr_accessible :choice_id, :respondent_id
 
@@ -29,5 +30,20 @@ class Answer < ActiveRecord::Base
 
       errors[:respondent_id] << "You cannot respond to your own poll"
     end
+  end
+
+  def validate_allowed_focus_group
+    polls_focus_groups = self.question.poll.focus_groups
+    return true if polls_focus_groups.empty?
+    users_focus_groups = User.find(self.respondent_id).focus_groups
+    allowed = polls_focus_groups.any? do |poll_fg|
+                   users_focus_groups.any? do |user_fg|  #FIXED: had to be                                                            nested any? methods :)
+                    user_fg.id == poll_fg.id
+                  end
+                end
+
+      unless allowed
+        errors[:respondent_id] << "You're not in this focus group"
+      end
   end
 end
