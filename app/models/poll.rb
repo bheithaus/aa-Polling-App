@@ -30,20 +30,20 @@ class Poll < ActiveRecord::Base
 
   validates :user_id, :title, :presence => true
 
-  def responses
+  def results
     # { :question1 => { :choice1 => count, :choice2 => count } ..etc }
     questions = self.questions
         .includes(:choices => :answers ).all
 
-    poll_response = {}
+    poll_results = {}
 
     questions.each do |question|
-      poll_response[question.body] = {}
+      poll_results[question.body] = {}
       question.choices.each do |choice|
-        poll_response[question.body][choice.body] = choice.answers.size
+        poll_results[question.body][choice.body] = choice.answers.size
       end
     end
 
-    poll_response
+    poll_results
   end
 end
